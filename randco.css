@@ -1,0 +1,80 @@
+html,
+body,
+#rooms { position:relative; margin:0; padding:0; height:100%; overflow:hidden; }
+button, .submit input { cursor:pointer; }
+.table tr, .table td { margin:0; padding:0; }
+
+#rooms { /*border-left:1px solid #ccc; border-right:1px solid #ccc; */}
+.room { position:absolute; left:0; top:0; height:100%; width:100%; overflow:hidden; background:#fff; color:#111; }
+.room * { margin:0; padding:0; border:0; background:none; font:13px "Nanum Gothic", gulim, serif, Tahoma, Georgia, Times, "Times New Roman"; line-height:15px; }
+
+.table { position:relative; width:100%; height:100%; border-collapse:collapse; margin:0; padding:0; }
+.table .v_area_out { position:relative; height:100%; vertical-align:top; }
+.table .v_area_out .v_close { position:absolute;right:5%;top:10px;border:1px solid #ccc; padding:5px 15px;background:#f6f6f6; color:#000; text-decoration:none; }
+.table .v_area_out .v_close:hover { font-weight:bold; }
+.table .v_area { display:block; position:absolute; left:0; bottom:0; width:100%; word-wrap:break-word; }
+.table .v_area_before { position:absolute; width:100%; height:100%; left:0; top:0; /*border-top:1px solid #ccc; */overflow:hidden; }
+.table .v_area .v_area_in { padding:10px; }
+
+.table .v_area .msg { display:block; padding:4px 0; border-bottom:1px dashed #f1f1f1; }
+.table .v_area .msg .nick { font-weight:bold; }
+.table .v_area .msg .i { }
+.table .v_area .msg .date { position:absolute; width:1px; height:1px; overflow:hidden; z-index:-1; bottom:100%; left:-500px; }
+.table .v_area .msg .msg_in { }
+.table .v_area .msg_notice { }
+.table .v_area .msg_self { color:blue; }
+.table .v_area .msg_self .nick { }
+.table .v_area .msg_stranger { }
+.table .v_area .msg_hidden { display:none; }
+.table .v_area .preview { position:fixed; visibility:hidden; z-index:-1; right:100%; }
+.table .v_area_on_scroll .preview_on { right:10%; max-width:80%; padding:5px 5px 0; margin-right:-5px; overflow:hidden; visibility:visible; z-index:1; border:1px solid #ccc; border-bottom:0; background:#fff; white-space:nowrap; }
+
+.room .c_area { position:fixed; left:0; bottom:0; width:100%; border-top:1px solid #ccc; /*border-bottom:1px solid #ccc;*/ background:#fff; }
+.room .c_area input,
+.room .c_area button { display:block; height:100%; font-size:16px; line-height:20px; }
+.room .c_area .close { display:block; position:absolute; left:0; top:0; width:20%; overflow:hidden; }
+.room .c_area .input { display:block; position:absolute; left:20%; top:0; z-index:1; width:60%; overflow:hidden; border-left:1px solid #ccc; border-right:1px solid #ccc; }
+.room .c_area .input input { text-indent:5px; }
+.room .c_area .submit { display:block; position:absolute; right:0; top:0; width:20%; overflow:hidden; background:#f6f6f6; }
+.room .c_area .close *,
+.room .c_area .input *,
+.room .c_area .submit * { width:100%; }
+.room .c_area .submit:hover * { font-weight:bold; }
+.room .c_area .start { display:block; height:100%; background:#f6f6f6; }
+.room .c_area .start button { display:block; width:100%; text-align:center; }
+.room .c_area .start button:hover { font-weight:bold; }
+.room .c_area .start button:active { font-weight:normal; }
+.room .c_area_hide { height:0 !important; overflow:hidden; border-top:0; }
+
+.room .loading { display:none; }
+.room .loading .msg { color:#111; }
+.room .loading a { text-decoration:none; }
+.table .c_area_ie { display:block; height:100%; }
+
+/* .desktop */
+.desktop .room .v_area .msg_loading { display:none; }
+.desktop .room .c_area .close { display:none; }
+.desktop .room .c_area .input { left:0; width:80%; }
+.desktop .room .c_area input,
+.desktop .room .c_area button { }
+.desktop .room .loading { display:block; position:absolute; right:30px; top:40px; z-index:1; }
+.desktop .room .loading .msg { clear:right; float:right; margin:5px 0 0; padding:5px; background:#fff; border:1px solid #ccc; white-space:nowrap; }
+.desktop .room .v_area,
+.room .v_area_scroll { height:100%; overflow-y:scroll; }
+
+/* c_area (35px) */
+.table .c_area_ie { margin-top:-29px; }
+.room .c_area_height { height:29px; }
+.room .c_area,
+.room .c_area .close,
+.room .c_area .input,
+.room .c_area .submit { height:28px; }
+.room .v_area .preview { bottom:29px; }
+
+/* navigation area */
+.n_area { position:absolute; left:0; top:0; width:100%; z-index:1; }
+/* xe */
+.v_area_before_xe { border:0; }
+.v_area_xe { }
+.n_area_xe { }
+.n_area_height_xe { }

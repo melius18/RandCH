@@ -1,0 +1,373 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="ko" xml:lang="ko" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="-1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>가가라이브 - 랜덤 채팅</title>
+    <link rel="stylesheet" href="randco.css">
+    <script type="text/javascript">
+        (function () {
+            var is_mobile = ('ontouchstart' in window || 'onmsgesturechange' in window || location.href.match(/[\?\&]m=1/))
+                , orientationEvent = ('onorientationchange' in window) ? 'onorientationchange' : 'resize';
+            var onloads = [], _window = window, _document = document;
+            window.onload = function () {
+                for (var i in onloads) onloads[i]();
+            }
+            if ((typeof document.head) == 'undefined')
+                document.head = document.getElementsByTagName('head')[0];
+            if ((typeof document.body) == 'undefined')
+                document.body = document.getElementsByTagName('body')[0];
+
+            if (!is_mobile) onloads.push(function () {
+                document.getElementById('rooms').className = 'desktop';
+            });
+
+            var ie = (function () {
+                var e = -1;
+                if (navigator.appName == "Microsoft Internet Explorer") {
+                    var t = navigator.userAgent;
+                    var n = /MSIE ([0-9]+)\./;
+                    if (n.exec(t) != null) e = parseInt(RegExp.$1, 10);
+                }
+                return e;
+            })();
+
+            if (ie == 6 || ie == 7) (function () {
+                var c_area_height,
+                    style = document.createElement('style');
+                style.setAttribute('type', 'text/css');
+                var resize = function () {
+                    if (style.styleSheet) style.styleSheet.cssText = css();
+                    else {
+                        style.innerHTML = '';
+                        style.appendChild(document.createTextNode(css()));
+                    }
+                }
+                var css = function () {
+                    return '.room .v_area{height:' + (document.body.offsetHeight - c_area_height) + 'px}';
+                }
+                onloads.push(function () {
+                    c_area_height = document.getElementById('c_area_height').offsetHeight;
+                    resize();
+                    document.head.appendChild(style);
+                    window.onresize = resize;
+                });
+                onloads.push(function () {
+                    document.getElementById('v_area_in').innerHTML += '<div class="msg msg_notice"><span class="msg_in">채팅이 작동하지 않을 경우 <a href="javascript:;" onclick="window.toFlash();">여기를 클릭</a>하시면 플래시 채팅방으로 변환됩니다.</span></div>';
+                });
+            })();
+
+            // innerText 대신 getText / setText
+            ; window.setText = function (e, txt) {
+                if (typeof (e.innerText) == 'string') {
+                    e.innerText = txt;
+                }
+                else {
+                    e.innerHTML = '';
+                    e.appendChild(document.createTextNode(txt));
+                }
+            }
+                ; window.getText = function (e) {
+                    if (typeof (e.innerText) == 'string') return e.innerText;
+                    return document.createRange().selectNodeContents(e).toString();
+                }
+
+                // LG DEBUG
+                ; (function () {
+                    if (ie == 6 || ie == 7) return;
+                    var c_area = null,
+                        n_area = null,
+                        v_area_out = null,
+                        rooms = null,
+                        n_area_height = 0,
+                        _style_text = '',
+                        _style = document.createElement('style');
+                    _style.setAttribute('type', 'text/css');
+                    var add_style = function (_style_text) {
+                        if (_style.styleSheet) _style.styleSheet.cssText = _style_text;
+                        else {
+                            _style.innerHTML = '';
+                            _style.appendChild(document.createTextNode(_style_text));
+                        }
+                    }
+                    var check_height = function () {
+                        if (rooms == null) rooms = document.getElementById('rooms');
+                        if (rooms == null) return;
+                        if (c_area == null) c_area = document.getElementById('c_area');
+                        if (c_area == null) return;
+                        if (v_area_out == null) v_area_out = document.getElementById('v_area_out');
+                        if (v_area_out == null) return;
+                        if (n_area == null) n_area = document.getElementById('n_area');
+                        if (n_area != null) n_area_height = n_area.offsetHeight;
+
+                        /*if(v_area.offsetHeight == v_area.parentNode.offsetHeight) return;
+                        if(v_area.offsetHeight < v_area.parentNode.offsetHeight)
+                            _style_text = '.room .v_area{height:'+(v_area.parentNode.offsetHeight)+'px}';
+                        else*/
+
+                        // 구형브라우저: #rooms{max-height}
+                        try {
+                            if ((document.body.offsetHeight + document.body.offsetHeight + document.getElementById('table').offsetHeight + rooms.offsetHeight) / 4 != rooms.offsetHeight) {
+                                if (n_area_height)
+                                    _style_text = '#rooms{max-height:' + (document.body.offsetHeight - n_area_height) + 'px}';
+                                else
+                                    _style_text = '#rooms{max-height:' + (v_area_out.offsetHeight + c_area.offsetHeight) + 'px}';
+                            }
+                        }
+                        catch (e) {
+                            console.log(e);
+                        }
+
+                        add_style(_style_text);
+                        document.head.appendChild(_style);
+
+                        // .v_area_out
+                        _style_text += '.table .v_area_out{max-height:' + (rooms.offsetHeight - c_area.offsetHeight) + 'px}';
+                        add_style(_style_text);
+
+                        return;
+                        var s = [];
+                        s.push('document 높이: ' + document.documentElement.clientHeight);
+                        s.push('body 높이: ' + document.body.offsetHeight);
+                        s.push('table 높이: ' + document.getElementById('table').offsetHeight);
+                        s.push('rooms 높이: ' + rooms.offsetHeight);
+                        s.push('v_area 높이: ' + v_area.offsetHeight);
+                        s.push('v_area_out 높이: ' + v_area_out.offsetHeight);
+                        s.push('c_area 높이: ' + document.getElementById('c_area').offsetHeight);
+                        s.push('n_area 높이: ' + n_area_height);
+
+                        if ('ontouchstart' in window || 'onmsgesturechange' in window || location.href.match(/[\?\&]m=1/)) alert(s.join('\n'));
+                        else console.log(s.join('\n'));
+                    }
+                    var _resize = function () {
+                        add_style('');
+                        setTimeout(check_height, 1000);
+                    };
+                    window.onresize = _resize;
+                    window.onorientationchange = _resize;
+                    onloads.push(check_height);
+                    check_height();
+                })();
+
+
+            var addScript = function (e, t) {
+                var n = false;
+                var r = document.createElement("script");
+                r.type = "text/javascript";
+                r.onreadystatechange = function () {
+                    if (n) return;
+                    if (this.readyState == "loaded" || this.readyState == "complete") {
+                        n = true; t()
+                    }
+                };
+                r.onload = function () {
+                    if (n) return;
+                    n = true;
+                    t();
+                };
+                r.src = e;
+                document.head.appendChild(r)
+            };
+
+            window.rchat_start = function () {
+                window.rchat_start = function () { };
+                var _room = function () {
+                    var roomObj = this;
+                    this.room = document.getElementById('room0');
+                    this.ids = {};
+                    var childrens = this.room.getElementsByTagName('*');
+                    for (var i in childrens) (function () {
+                        if (typeof (childrens[i]) != 'object' || typeof (childrens[i].getAttribute) == 'undefined') return;
+                        var _id = childrens[i].getAttribute('id');
+                        if (_id == null || (typeof _id) != 'string') return;
+                        roomObj.ids[_id] = childrens[i];
+                        childrens[i].removeAttribute('id');
+                    })();
+                    this.innerHTML = this.room.innerHTML;
+                }
+
+                /* start */
+                if (typeof window.getComputedStyle != "function") {
+                    window.getComputedStyle = function (e, t) {
+                        this.el = e; this.getPropertyValue = function (t) {
+                            var n = /(\-([a-z]){1})/g;
+                            if (t == "float") t = "styleFloat";
+                            if (n.test(t)) {
+                                t = t.replace(n, function () {
+                                    return arguments[2].toUpperCase();
+                                })
+                            }
+                            return e.currentStyle[t] ? e.currentStyle[t] : null
+                        };
+                        return this;
+                    }
+                }
+                if (!Array.prototype.indexOf) {
+                    Array.prototype.indexOf = function (e) {
+                        "use strict";
+                        if (this === void 0 || this === null) throw new TypeError;
+                        var t = Object(this);
+                        var n = t.length >>> 0;
+                        if (n === 0) return -1;
+                        var r = 0;
+                        if (arguments.length > 0) {
+                            r = Number(arguments[1]);
+                            if (r !== r) r = 0;
+                            else if (r !== 0 && r !== 1 / 0 && r !== -(1 / 0)) r = (r > 0 || -1) * Math.floor(Math.abs(r))
+                        }
+                        if (r >= n) return -1;
+                        var i = r >= 0 ? r : Math.max(n - Math.abs(r), 0);
+                        for (; i < n; i++) {
+                            if (i in t && t[i] === e) return i
+                        }
+                        return -1;
+                    }
+                }
+                _room.prototype.loading_open = function (e, t) {
+                    var n = is_mobile ? ["v_area_in"] : ["loading"];
+                    if (typeof t == "object" && typeof t.ids != "undefined") {
+                        if (typeof t.ids == "string") n = [t.ids];
+                        else n = t.ids
+                    }
+                    if (typeof this.loading_list == "undefined") this.loading_list = {};
+                    if (typeof t != "object" || t.enable_chat !== true) this.ids.c_area.className += " c_area_hide";
+                    var r = typeof e == "string" ? e : getText(e);
+                    if (typeof this.loading_list[r] == "object") this.loading_close(r);
+                    this.loading_list[r] = {};
+                    for (var i in n) (function (t, n) {
+                        var i = _document.createElement("div");
+                        i.className = "msg msg_loading";
+                        if (typeof e == "string") setText(i, e);
+                        else i.appendChild(e);
+                        if (typeof n.loading_list[r][t] == "undefined") n.loading_list[r][t] = i;
+                        n.append(i, t)
+                    })(n[i], this)
+                };
+                _room.prototype.loading_close = function (e, t) {
+                    if (typeof this.loading_list == "undefined") return;
+                    if (typeof this.loading_list[e] != "object") return;
+                    if (typeof t == "object" && t.enable_chat === true) this.ids.c_area.className = this.ids.c_area.className.replace(/(^|\s+)c_area_hide($|\s+)/g, "");
+                    for (var n in this.loading_list[e]) {
+                    this.loading_list[e][n].outerHTML = "";
+                        delete this.loading_list[e][n];
+                    }
+                };
+                _room.prototype.append = function (e, t) {
+                    var n = this;
+                    if (typeof t == "undefined") t = "v_area_in";
+                    if (n.html_started === false) n.html_start();
+                    if (t != "v_area_in" || n.ids.v_area.scrollHeight < n.ids.v_area_before.clientHeight) {
+                        if (n.ids[t]) n.ids[t].appendChild(e);
+                        return;
+                    }
+                    if (!n.ids.v_area.className.match(/(^|\s+)v_area_scroll($|\s+)/)) {
+                        n.ids.v_area.className += " v_area_scroll";
+                        var r = /(^|\s+)v_area_on_scroll($|\s+)/;
+                        n.ids.v_area.onscroll = function () {
+                            if (this.scrollHeight <= this.scrollTop + this.clientHeight) {
+                                if (!this.className.match(r)) return;
+                                this.className = this.className.replace(r, "")
+                            } else {
+                                if (this.className.match(r)) return;
+                                this.className = this.className + " v_area_on_scroll";
+                            }
+                        }
+                    }
+                    var i = n.ids.v_area.scrollHeight == n.ids.v_area.scrollTop + n.ids.v_area.clientHeight; n.ids[t].appendChild(e);
+                    if (typeof n._scroll == "undefined") n._scroll = 2;
+                    if (i || n._scroll > 0) {
+                        if (n._scroll > 0 && n.ids.v_area.scrollHeight != n.ids.v_area.clientHeight) {
+                            i = true;
+                            n._scroll--;
+                        }
+                        if (i) n.ids.v_area.scrollTop = n.ids.v_area.scrollHeight - n.ids.v_area.clientHeight
+                    } var s = e.cloneNode(true);
+                    (function (e) {
+                        clearTimeout(e._timeout);
+                        e.innerHTML = "";
+                        e.appendChild(s);
+                        if ("none" == getComputedStyle(e.childNodes[0]).getPropertyValue("display")) {
+                            e.className = e.className.replace(/(^|\s+)preview_on(\s+|$)/g, "");
+                            return;
+                        }
+                        if (!e.className.match(/(^|\s+)preview_on(\s+|$)/)) e.className += " preview_on";
+                        e._timeout = setTimeout(function () {
+                            e.innerHTML = "";
+                            e.className = e.className.replace(/(^|\s+)preview_on(\s+|$)/g, "")
+                        }, 4e3)
+                    }
+                    )(n.ids.preview)
+                }
+                /* end */
+
+                var room = new _room()
+                    , q = '';
+                if (typeof (location.search) == 'string' && location.search.length) q = location.search.replace(/^\?/g, '&').replace(/#[^#]*$/, '');
+
+                room.loading_open('로딩중..');
+                addScript('http://www.gagalive.com/randomchat/js/?c=' + new Date().getTime() + q, function () {
+                    room.loading_close('로딩중..');
+                });
+
+                window.rooms = [room];
+            }
+
+            window.toFlash = function () {
+                var height = document.body.clientHeight;
+                if (!confirm('플래시 채팅방으로 변환하시겠습니까?\n플래시 플레이어가 설치된 경우에만 이용하실 수 있습니다.')) return;
+                document.body.innerHTML = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,28,0" width="100%" height="' + height + '"><param name="movie" value="http://www.gagalive.kr/livechatr.swf"><param name="wmode" value="window"><param name="allowScriptAccess" value="never"><param name="quality" value="high"><embed type="application/x-shockwave-flash" src="http://www.gagalive.kr/livechatr.swf" autostart="false" width="100%" height="' + height + '" wmode="window"></object>';
+            }
+        })();
+    </script>
+</head>
+
+<body>
+
+    <div id="rooms">
+        <div id="room0" class="room">
+            <table id="table" class="table">
+                <tr>
+                    <td id="v_area_out" class="v_area_out">
+                        <!-- ie -->
+                        <span class="c_area_ie">&nbsp;</span>
+
+                        <div id="v_area_before" class="v_area_before"></div>
+                        <div id="v_area" class="v_area">
+                            <div id="v_area_in" class="v_area_in">
+                                <div class="msg msg_notice">
+                                    <span class="msg_in">랜덤한 모르는 사람과 채팅을 즐기시길 바랍니다!</span>
+                                </div>
+                                <div class="msg msg_notice">
+                                    <span class="msg_in">채팅 시작을 위해서는 아래의 "랜덤 채팅 시작하기" 단추를 누르시길 바랍니다</span>
+                                </div>
+                                <div class="msg msg_notice msg_hidden">
+                                    <span class="msg_in">
+                                        <a href="http://www.gagalive.com/live/random_chat_board" target="_blank"> [공식] 랜덤 채팅 사람 찾기 게시판</a>
+                                    </span>
+                                </div>
+                            </div>
+                            <div id="preview" class="preview"></div>
+                        </div>
+
+                        <div id="loading" class="loading"></div>
+                    </td>
+                </tr>
+                <!-- ie -->
+                <tr>
+                    <td id="c_area_height" class="c_area_height">&nbsp;</td>
+                </tr>
+            </table>
+            <div id="c_area" class="c_area">
+                <span class="start">
+                    <button type="button" onclick="window.rchat_start();">랜덤 채팅 시작하기</button>
+                </span>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

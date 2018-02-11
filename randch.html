@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>RAND_CH</title>
+</head>
+
+<body>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <style>
+        div,
+        table {
+            display: inline;
+        }
+
+        iframe {
+            width: 300px;
+            height: 500px;
+        }
+
+        .btn {
+            width: 50px;
+            height: 50px;
+        }
+
+        td {
+            text-align: center;
+        }
+    </style>
+
+    <!-- http://mybeanstalk-env.ap-northeast-2.elasticbeanstalk.com/ -->
+    <div>
+        <table>
+            <!-- <tr>
+                <td>
+                    <textarea rows="25" cols="20"></textarea>
+                </td>
+            </tr> -->
+            <tr>
+                <td rowspan="4">
+                    <div>
+                        <iframe name="ifrm1" id="ifrm1" src="http://www.gagalive.com/randomchat/"></iframe>
+                    </div>
+                </td>
+                <td>
+                    <input class="btn" id="btn1" type="button" value="&lt&lt">
+                    <input class="btn" id="btn2" type="button" value="&gt&gt">
+                </td>
+                <td rowspan="4">
+                    <div>
+                        <iframe name="ifrm2" id="ifrm2" src="http://www.gagalive.com/randomchat/"></iframe>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input id="rad1" type="radio" disabled> timer
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input class="btn" id="btn5" type="button" value="&lt&lt&gt&gt">
+                    <input class="btn" id="btn6" type="button" value="|timer|">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input class="btn" id="btn3" type="button" value="|reset|">
+                    <input class="btn" id="btn4" type="button" value="|start|">
+                </td>
+            </tr>
+        </table>
+    </div>
+    <script type="text/javascript" src="randch4.js"></script>
+</body>
+
+</html>
