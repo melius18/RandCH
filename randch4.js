@@ -1,4 +1,4 @@
-//chrome --disable-web-security --user-data-dir ?? --allow-file-access-from-files --private
+//chrome --disable-web-security --user-data-dir --private
 //file:///D:/src_code/inside_js/jrp/randch.html
 
 var audio1 = new Audio('./sound/gunreload.wav');
